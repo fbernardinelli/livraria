@@ -2,8 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core">
-	
-<h:head/>
+
+<h:head />
 
 <h:body>
 	<h1>Novo Livro</h1>
@@ -20,14 +20,15 @@
 					<f:ajax event="blur" render="messages" />
 				</h:inputText>
 				<h:outputLabel value="ISBN:" for="isbn" />
-				<h:inputText id="isbn" value="#{livroBean.livro.isbn}"  alidator="#{livroBean.comecaComDigitoUm}" >
+				<h:inputText id="isbn" value="#{livroBean.livro.isbn}"
+					alidator="#{livroBean.comecaComDigitoUm}">
 					<f:ajax event="keypress" render="messages" />
 				</h:inputText>
-				<h:outputLabel value="Preço:" for="preco">
+				<h:outputLabel value="Preço:" for="preco" />
+				<h:inputText id="preco" value="#{livroBean.livro.preco}">
 					<f:convertNumber type="currency" pattern="R$ #0.00"
 						currencySymbol="R$" locale="pt_BR" />
-				</h:outputLabel>
-				<h:inputText id="preco" value="#{livroBean.livro.preco}" />
+				</h:inputText>
 				<h:outputLabel value="Data de Lançamento:" for="dataLancamento" />
 				<h:inputText id="dataLancamento"
 					value="#{livroBean.livro.dataLancamento.time}">
@@ -48,17 +49,15 @@
 				<f:ajax execute="autor" render="tabelaAutores" />
 			</h:commandButton>
 
+			<br />
+
+			<h:commandLink value="Cadastrar novo autor" action="#{livroBean.formAutor}" immediate="true"/>
+
 			<h:dataTable value="#{livroBean.autoresDoLivro}" var="autor"
 				id="tabelaAutores">
 				<h:column>
 					<f:facet name="header">Autor</f:facet>
 					<h:outputText value="#{autor.nome}" />
-				</h:column>
-				<h:column>
-					<f:facet name="header">Data</f:facet>
-					<h:outputText value="#{livroBean.livro.dataLancamento.time}">
-						<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
-					</h:outputText>
 				</h:column>
 			</h:dataTable>
 		</fieldset>
@@ -67,19 +66,29 @@
 			<f:ajax execute="@form" render="@form :tabelaLivros" />
 		</h:commandButton>
 	</h:form>
+
 	<h:dataTable value="#{livroBean.livros}" var="livro" id="tabelaLivros">
-		<f:facet name="header">Título</f:facet>
-		<h:outputLabel value="#{livro.titulo}" />
-		<f:facet name="header">ISBN</f:facet>
-		<h:outputLabel value="#{livro.isbn}" />
-		<f:facet name="header">Preço</f:facet>
-		<h:outputLabel value="#{livro.preco}">
-			<f:convertNumber type="currency" pattern="R$ #0.00"
-				currencySymbol="R$" locale="pt_BR" />
-		</h:outputLabel>
-		<h:outputLabel value="#{livroBean.livro.dataLancamento.time}">
-			<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
-		</h:outputLabel>
+		<h:column>
+			<f:facet name="header">Título</f:facet>
+			<h:outputLabel value="#{livro.titulo}" />
+		</h:column>
+		<h:column>
+			<f:facet name="header">ISBN</f:facet>
+			<h:outputLabel value="#{livro.isbn}" />
+		</h:column>
+		<h:column>
+			<f:facet name="header">Preço</f:facet>
+			<h:outputLabel value="#{livro.preco}">
+				<f:convertNumber type="currency" pattern="R$ #0.00"
+					currencySymbol="R$" locale="pt_BR" />
+			</h:outputLabel>
+
+		</h:column>
+		<h:column>
+			<h:outputLabel value="#{livroBean.livro.dataLancamento.time}">
+				<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+			</h:outputLabel>
+		</h:column>
 	</h:dataTable>
 
 </h:body>

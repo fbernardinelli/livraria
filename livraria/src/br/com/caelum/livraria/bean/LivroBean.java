@@ -32,6 +32,10 @@ public class LivroBean {
 		return livro;
 	}
 	
+	public List<Livro> getLivros(){
+		return new DAO<Livro>(Livro.class).listaTodos();
+	}
+	
 	public void gravaAutor(){
 		Autor autor = new DAO<Autor>(Autor.class).buscaPorId(this.autorId);
 		this.livro.adicionaAutor(autor);
@@ -49,7 +53,6 @@ public class LivroBean {
 		System.out.println("Gravando livro " + this.livro.getTitulo());
 
 		if (livro.getAutores().isEmpty()) {
-			//throw new RuntimeException("Livro deve ter pelo menos um Autor.");
 			FacesContext.getCurrentInstance().addMessage("autor", new FacesMessage("Livro deve ter pelo menos um Autor."));
 			return;
 		}
@@ -61,6 +64,10 @@ public class LivroBean {
 		 if(!value.toString().startsWith("1")){
 			 throw new ValidatorException(new FacesMessage("Deveria começar com 1"));
 		 }
+	}
+	
+	public String formAutor(){
+		return "autor?faces-redirect=true";
 	}
 
 }
