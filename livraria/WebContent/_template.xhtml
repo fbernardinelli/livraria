@@ -9,7 +9,7 @@
 	<div id="cabecalho">
 		<h:graphicImage library="img" name="logo.png" />
 		
-		<h:form>
+		<h:form rendered="#{usuarioLogado != null}">
 			<h:commandLink value="Logout" action="#{loginBean.deslogar}"/>
 		</h:form>
 		
