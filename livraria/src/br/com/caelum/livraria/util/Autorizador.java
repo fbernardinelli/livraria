@@ -8,33 +8,37 @@ import javax.faces.event.PhaseListener;
 
 import br.com.caelum.livraria.modelo.Usuario;
 
-public class Autorizador implements PhaseListener{
+public class Autorizador implements PhaseListener {
+
+	private static final long serialVersionUID = 1L;
 
 	@Override
 	public void afterPhase(PhaseEvent evento) {
+
 		FacesContext context = evento.getFacesContext();
-		String nomeDaPagina = context.getViewRoot().getViewId();
+		String nomePagina = context.getViewRoot().getViewId();
+	
+		System.out.println(nomePagina);
 		
-		System.out.println(nomeDaPagina);
-		
-		if ("/login.xhtml".equals(nomeDaPagina)){
+		if("/login.xhtml".equals(nomePagina)) {
 			return;
 		}
 		
 		Usuario usuarioLogado = (Usuario) context.getExternalContext().getSessionMap().get("usuarioLogado");
 		
-		if(usuarioLogado != null){
+		if(usuarioLogado != null) {
 			return;
 		}
 		
+		//redirecionamento para login.xhtml
+		
 		NavigationHandler handler = context.getApplication().getNavigationHandler();
-		handler.handleNavigation(context, null, new RedirectView("/login.xhtml").toString());
+		handler.handleNavigation(context, null, "/login?faces-redirect=true");
 		context.renderResponse();
-	}
+	} 
 
 	@Override
 	public void beforePhase(PhaseEvent event) {
-		System.out.println("Fase..: " + event.getPhaseId());
 	}
 
 	@Override

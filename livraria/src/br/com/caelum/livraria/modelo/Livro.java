@@ -25,9 +25,7 @@ public class Livro implements Serializable {
 	private String titulo;
 	private String isbn;
 	private double preco;
-
-	//@Temporal(TemporalType.DATE)
-	@Temporal(TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.DATE)
 	private Calendar dataLancamento = Calendar.getInstance();
 
 	@ManyToMany(fetch=FetchType.EAGER)
@@ -85,8 +83,7 @@ public class Livro implements Serializable {
 	}
 
 	public void removeAutor(Autor autor) {
-		this.getAutores().remove(autor);
+		this.autores.remove(autor);
 	}
-	
 
 }

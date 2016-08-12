@@ -7,42 +7,36 @@ import javax.faces.context.FacesContext;
 
 import br.com.caelum.livraria.dao.UsuarioDao;
 import br.com.caelum.livraria.modelo.Usuario;
-import br.com.caelum.livraria.util.RedirectView;
 
 @ManagedBean
 @ViewScoped
 public class LoginBean {
-	
+
 	private Usuario usuario = new Usuario();
-	
+
 	public Usuario getUsuario() {
 		return usuario;
 	}
-
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
-	}
-
-	public RedirectView efetuaLogin(){
+	
+	public String efetuaLogin() {
+		System.out.println("fazendo login do usuario " + this.usuario.getEmail());
 		
 		FacesContext context = FacesContext.getCurrentInstance();
 		boolean existe = new UsuarioDao().existe(this.usuario);
-		if (existe){
+		if(existe ) {
 			context.getExternalContext().getSessionMap().put("usuarioLogado", this.usuario);
-			return new RedirectView("livro");
+			return "livro?faces-redirect=true";
 		}
 		
 		context.getExternalContext().getFlash().setKeepMessages(true);
-		context.addMessage("login:email", new FacesMessage("Usuário e/ou senha incorretos"));
+		context.addMessage(null, new FacesMessage("Usuário não encontrado"));
 		
-		return new RedirectView("login");
+		return "login?faces-redirect=true";
 	}
 	
-	public RedirectView deslogar(){
+	public String deslogar() {
 		FacesContext context = FacesContext.getCurrentInstance();
 		context.getExternalContext().getSessionMap().remove("usuarioLogado");
-		return new RedirectView("login");
+		return "login?faces-redirect=true";
 	}
-	
-
 }
