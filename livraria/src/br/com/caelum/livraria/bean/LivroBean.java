@@ -1,7 +1,9 @@
 package br.com.caelum.livraria.bean;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -24,6 +26,14 @@ public class LivroBean implements Serializable {
 
 	private Integer autorId;
 
+	private List<Livro> livros;
+	
+	private List<String> generos = Arrays.asList("Romance", "Drama", "Ação");
+
+	public List<String> getGeneros() {
+	    return generos;
+	}
+
 	public void setAutorId(Integer autorId) {
 		this.autorId = autorId;
 	}
@@ -37,11 +47,19 @@ public class LivroBean implements Serializable {
 	}
 
 	public List<Livro> getLivros() {
-		return new DAO<Livro>(Livro.class).listaTodos();
+		DAO<Livro> dao = new DAO<Livro>(Livro.class);
+		if (this.livros == null) {
+			this.livros = dao.listaTodos();
+		}
+		return livros;
 	}
 
 	public List<Autor> getAutores() {
 		return new DAO<Autor>(Autor.class).listaTodos();
+	}
+
+	public void setLivro(Livro livro) {
+		this.livro = livro;
 	}
 
 	public List<Autor> getAutoresDoLivro() {
@@ -49,9 +67,9 @@ public class LivroBean implements Serializable {
 	}
 
 	public void carregarLivroPelaId() {
-		this.livro = new DAO<Livro>(Livro.class).buscaPorId(this.livro.getId()); 
+		this.livro = new DAO<Livro>(Livro.class).buscaPorId(this.livro.getId());
 	}
-	
+
 	public void gravarAutor() {
 		Autor autor = new DAO<Autor>(Autor.class).buscaPorId(this.autorId);
 		this.livro.adicionaAutor(autor);
@@ -67,8 +85,10 @@ public class LivroBean implements Serializable {
 			return;
 		}
 
-		if(this.livro.getId() == null) {
-			new DAO<Livro>(Livro.class).adiciona(this.livro);
+		DAO<Livro> dao = new DAO<Livro>(Livro.class);
+		if (this.livro.getId() == null) {
+			dao.adiciona(this.livro);
+			this.livros = dao.listaTodos();
 		} else {
 			new DAO<Livro>(Livro.class).atualiza(this.livro);
 		}
@@ -80,29 +100,53 @@ public class LivroBean implements Serializable {
 		System.out.println("Removendo livro");
 		new DAO<Livro>(Livro.class).remove(livro);
 	}
-	
+
 	public void removerAutorDoLivro(Autor autor) {
 		this.livro.removeAutor(autor);
 	}
-	
+
 	public void carregar(Livro livro) {
 		System.out.println("Carregando livro");
 		this.livro = livro;
 	}
-	
+
 	public String formAutor() {
 		System.out.println("Chamanda do formulário do Autor.");
 		return "autor?faces-redirect=true";
 	}
 
-	public void comecaComDigitoUm(FacesContext fc, UIComponent component,
-			Object value) throws ValidatorException {
+	public void comecaComDigitoUm(FacesContext fc, UIComponent component, Object value) throws ValidatorException {
 
 		String valor = value.toString();
 		if (!valor.startsWith("1")) {
-			throw new ValidatorException(new FacesMessage(
-					"ISBN deveria começar com 1"));
+			throw new ValidatorException(new FacesMessage("ISBN deveria começar com 1"));
 		}
 
 	}
+
+	public boolean precoEhMenor(Object valorColuna, Object filtroDigitado, Locale locale) { // java.util.Locale
+
+		String textoDigitado = (filtroDigitado == null) ? null : filtroDigitado.toString().trim();
+
+		System.out.println("Filtrando pelo " + textoDigitado + ", Valor do elemento: " + valorColuna);
+
+		if (textoDigitado == null || textoDigitado.equals("")) {
+			return true;
+		}
+
+		if (valorColuna == null) {
+			return false;
+		}
+
+		try {
+			Double precoDigitado = Double.valueOf(textoDigitado);
+			Double precoColuna = (Double) valorColuna;
+
+			return precoColuna.compareTo(precoDigitado) < 0;
+
+		} catch (NumberFormatException e) {
+			return false;
+		}
+	}
+
 }

@@ -35,6 +35,12 @@
 						<f:ajax event="blur" render="messages" />
 					</p:inputText>
 
+					<p:outputLabel value="Gênero:" for="genero" />
+					<p:selectOneMenu value="#{livroBean.livro.genero}" id="genero">
+						<f:selectItem itemLabel="Selecione..." itemValue="#{null}" />
+						<f:selectItems value="#{livroBean.generos}" />
+					</p:selectOneMenu>
+
 					<p:outputLabel value="ISBN:" for="isbn" />
 					<p:inputMask id="isbn" value="#{livroBean.livro.isbn}"
 						validator="#{livroBean.comecaComDigitoUm}"
@@ -85,41 +91,52 @@
 		</h:form>
 
 		<h:form id="formTabelaLivros">
-			<h:dataTable value="#{livroBean.livros}" var="livro"
-				id="tabelaLivros">
-				<h:column>
-					<f:facet name="header">Título</f:facet>
+			<f:facet name="header">Livros</f:facet>
+			<p:dataTable value="#{livroBean.livros}" var="livro"
+				id="tabelaLivros" paginator="true" rows="3">
+				<p:column headerText="Titulo" sortBy="#{livro.titulo}"
+					filterBy="#{livro.titulo}" filterMatchMode="startsWith">
 					<h:outputText value="#{livro.titulo}" />
-				</h:column>
-				<h:column>
-					<f:facet name="header">ISBN</f:facet>
+				</p:column>
+				<p:column headerText="Gênero" sortBy="#{livro.genero}"
+					filterBy="#{livro.genero}" filterMatchMode="startsWith">
+					<f:facet name="filter">
+						<p:selectOneMenu onchange="PF('tabelaLivros').filter()">
+							<f:selectItem itemLabel="Selecione..." itemValue="#{null}"
+								noSelectionOption="true" />
+							<f:selectItems value="#{livroBean.generos}" />
+						</p:selectOneMenu>
+					</f:facet>
+					<h:outputText value="#{livro.genero}" />
+				</p:column>
+				<p:column headerText="ISBN" sortBy="#{livro.isbn}"
+					filterBy="#{livro.isbn}" filterMatchMode="contains">
 					<h:outputText value="#{livro.isbn}" />
-				</h:column>
-				<h:column>
-					<f:facet name="header">Preço</f:facet>
+				</p:column>
+				<p:column headerText="Preço" sortBy="#{livro.preco}"
+					filterBy="#{livro.preco}"
+					filterFunction="#{livroBean.precoEhMenor}">
 					<h:outputText value="#{livro.preco}">
 						<f:convertNumber type="currency" pattern="R$ #0.00"
 							currencySymbol="R$" locale="pt_BR" />
 					</h:outputText>
-				</h:column>
-				<h:column>
-					<f:facet name="header">Data</f:facet>
+				</p:column>
+				<p:column headerText="Data" sortBy="#{livro.dataLancamento.time}"
+					filterBy="#{livro.dataLancamento.time}" filterMatchMode="contains">
 					<h:outputText value="#{livro.dataLancamento.time}">
 						<f:convertDateTime pattern="dd/MM/yyyy"
 							timeZone="America/Sao_Paulo" />
 					</h:outputText>
-				</h:column>
+				</p:column>
 
-				<h:column>
-					<f:facet name="header">Alterar</f:facet>
+				<p:column headerText="Alterar">
 					<h:commandLink value="altera" action="#{livroBean.carregar(livro)}" />
-				</h:column>
+				</p:column>
 
-				<h:column>
-					<f:facet name="header">Remover</f:facet>
+				<p:column headerText="header">
 					<h:commandLink value="remove" action="#{livroBean.remover(livro)}" />
-				</h:column>
-			</h:dataTable>
+				</p:column>
+			</p:dataTable>
 		</h:form>
 	</ui:define>
 </ui:composition>
