@@ -6,11 +6,13 @@ import java.util.Map;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 
-import br.com.caelum.livraria.dao.DAO;
+import br.com.caelum.livraria.dao.LivroDao;
 
 public class LivroDataModel extends LazyDataModel<Livro>{
 
-    private DAO<Livro> dao = new DAO<Livro>(Livro.class);;
+	private static final long serialVersionUID = 1L;
+
+	private LivroDao dao = new LivroDao(); 
 
     public LivroDataModel() {
         super.setRowCount(dao.quantidadeDeElementos());

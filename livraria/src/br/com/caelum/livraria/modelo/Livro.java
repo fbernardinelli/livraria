@@ -38,7 +38,7 @@ public class Livro implements Serializable {
 
 	private String genero;
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany
 	private List<Autor> autores = new ArrayList<Autor>();
 
 	public List<Autor> getAutores() {
